@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Axis ShareVision: Proposed Residence menu</title>
+<style>
+:root{--bg:#eef0f6;--panel:#fff;--ink:#1d2340;--mute:#5d6483;--line:#d9dcea;--navy:#14246b;--blue:#2d4a9b;--gold:#f2bd5b;--goldd:#e3a93d;--new:#e6f5ec;--newb:#2a8a55;--hl:#eef1fb;--ok:#2a8a55;--warn:#fff3d6;--warnb:#b57a0b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12152a;--panel:#1c2140;--ink:#e8eaf6;--mute:#a4abcc;--line:#343a63;--new:#143626;--newb:#52c488;--hl:#252b52;--warn:#3a2f12;--warnb:#e6b04d}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",Roboto,Arial,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.top{padding:16px 20px 4px}.top h1{margin:0;font-size:20px}.top p{margin:4px 0 0;color:var(--mute)}
+.stage{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;padding:16px 20px 40px;align-items:start}
+.phone{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;color:var(--navy)}
+.phone .hd{background:var(--blue);color:#fff;padding:14px 16px;font-weight:700;font-size:17px}
+.phone .hd small{display:block;font-weight:400;font-size:12px;opacity:.85}
+.grp{background:var(--gold);color:var(--navy);font-weight:700;padding:11px 14px;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--navy);text-transform:uppercase;font-size:15px}
+.grp .tag{margin-left:auto;font-size:11px;text-transform:none;background:var(--new);color:#1f6f43;border:1px solid #2a8a55;border-radius:10px;padding:1px 8px}
+.item{display:block;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #e3e5f0;padding:14px 18px;font:600 16px "Segoe UI",Roboto,Arial,sans-serif;color:var(--navy);cursor:pointer}
+.item:hover{background:#f1f3fb}.item[aria-current=true]{background:#dfe5fb;box-shadow:inset 4px 0 0 var(--navy)}
+.item.static{cursor:default}.item.static:hover{background:#fff}
+.newbox{box-shadow:inset 3px 0 0 var(--newb)}
+.legend{padding:10px 14px;font-size:12px;color:#5d6483;background:#f6f7fb}
+.switch{display:flex;gap:6px;margin:0 0 12px}
+.switch button{flex:1;font:inherit;font-size:13px;padding:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer}
+.switch button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+.view{background:var(--panel);border:1px solid var(--line);border-radius:6px;min-height:420px}
+.view h2{margin:0;padding:14px 18px;font-size:18px;color:var(--ink);border-bottom:1px solid var(--line)}
+.view .in{padding:16px 18px}
+.ctx{background:var(--hl);border-left:3px solid var(--blue);padding:8px 12px;margin-bottom:14px;color:var(--mute);font-size:13px}
+.ppl{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.ppl span{border:1px solid var(--line);border-radius:14px;padding:2px 10px;color:var(--ink)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:600;color:var(--mute)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:7px 8px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.s2{grid-column:1/-1}
+.btn{font:inherit;font-weight:600;border:0;border-radius:4px;background:var(--navy);color:#fff;padding:8px 16px;cursor:pointer}
+.btn.sm{padding:4px 10px;font-size:12px}
+.wrap{overflow-x:auto;margin-top:14px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--mute);font-size:12px}
+td input{width:72px}
+.st{font-size:12px;font-weight:600;border:1px solid;border-radius:10px;padding:1px 8px}
+.st.ok{color:var(--newb);background:var(--new);border-color:var(--newb)}.st.p{color:var(--warnb);background:var(--warn);border-color:var(--warnb)}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:13px}
+.task{flex-direction:row;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px;font-weight:400;color:var(--ink)}
+.task.d span{text-decoration:line-through;color:var(--mute)}.task input{margin-top:4px}
+:root{--ttl:#14246b;--gl:#5a6db3;--gh:#ccd2e3;--band:#ceffdf;--bandt:#14312a;--pgb:#b3badb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ttl:#a9b8ff;--gh:#2a3050;--band:#1f4a37;--bandt:#dff7ea;--pgb:#2f3659}}
+.sv{padding:14px 18px 22px}
+.crumbs{color:var(--mute);font-size:14px;padding-bottom:10px;border-bottom:1px dotted var(--mute)}
+.crumbs span{background:var(--hl);border-radius:4px;padding:3px 9px;margin-right:2px}
+.crumbs b{color:var(--ttl);font-size:16px;font-weight:600}
+.gl{height:3px;background:var(--gl);margin:14px 0}
+.stt,.ftitle{color:var(--ttl);font-size:24px;font-weight:500;margin:6px 0 4px}
+.dots{border-bottom:1px dotted var(--mute);margin-bottom:12px}
+.plus{width:38px;height:38px;border-radius:50%;border:0;background:var(--hl);color:#3c9a4a;font-size:26px;line-height:1;cursor:pointer;margin-bottom:12px}
+table.g thead th{background:var(--gh);color:var(--ink);font-size:15px}
+table.g td{font-size:15px}
+.pen{border:0;background:var(--hl);color:#3c9a4a;border-radius:16px;padding:4px 14px;cursor:pointer;font-size:15px}
+.acts{display:flex;gap:18px;margin:4px 0 10px}
+.act{display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--ttl);font-size:16px;font-family:inherit;cursor:pointer}
+.act i{width:34px;height:34px;border-radius:50%;background:var(--hl);display:grid;place-items:center;font-style:normal;font-weight:700}
+.act .ok{color:#3c9a4a}.act .no{color:#e0962d}
+.fr{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:16px;align-items:center;padding:5px 0}
+.fr input[type=date],.fr select,.fr input[type=text]{width:100%;max-width:560px}
+label.lb{display:block;text-align:right;font-size:15px;font-weight:600;color:var(--ink)}
+.fr input[type=checkbox]{width:18px;height:18px;justify-self:start;padding:0}
+.band{background:var(--band);color:var(--bandt);font-weight:600;font-size:19px;padding:9px 14px;margin:14px 0 8px}
+.bad{border-color:#c0392b!important}
+.toast{background:var(--new);color:var(--newb);border:1px solid var(--newb);border-radius:4px;padding:6px 12px;margin-bottom:10px;font-weight:600}
+.xc{border:1px solid var(--line);border-top:4px solid var(--gl);border-radius:4px;padding:12px 18px 16px}
+.xt{color:var(--ttl);font-size:28px;font-weight:500;margin:2px 0 4px}
+.add{display:flex;align-items:center;gap:12px;border:0;background:none;color:var(--ink);font-size:18px;font-family:inherit;cursor:pointer;padding:0;margin:10px 0 14px}
+.add i{width:38px;height:38px;border-radius:50%;background:var(--hl);color:#3c9a4a;display:grid;place-items:center;font-style:normal;font-size:24px}
+.gx{width:100%;min-width:560px}.gx th{background:var(--gh);color:var(--ink);font-size:15px}.gx td{font-size:15px}
+.xr{cursor:pointer}.xr:hover td{background:var(--hl)}
+.fi{display:inline-grid;place-items:center;width:20px;height:20px;border:1.5px solid var(--ink);border-radius:50%;font-size:10px;margin-left:10px;vertical-align:middle}
+.empty{text-align:center;color:var(--mute);font-style:italic;padding:16px}
+.cut{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pg{background:var(--pgb);padding:10px 12px;display:flex;align-items:center;gap:6px;color:var(--ink);font-size:14px}
+.pg b{background:#f5b94a;color:#fff;padding:6px 14px;border-radius:2px}
+.pg .arr{background:var(--panel);border:1px solid var(--line);padding:6px 12px;border-radius:2px}.pg .info{margin-left:auto}
+.alert{background:#e60026;color:#fff;border-radius:4px;padding:10px 14px;margin:10px 0}
+span.lb{display:block;text-align:right;font-size:15px;font-weight:600;color:var(--ink)}
+.req{color:#e60026}
+.fr label.cb{flex-direction:row;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:400;color:var(--ink)}
+.fr textarea{width:100%;max-width:560px}
+.bad2 .lb{color:#e60026}
+@media (max-width:620px){span.lb{text-align:left}}
+@media (max-width:620px){.fr{grid-template-columns:1fr;gap:4px}label.lb{text-align:left}}
+@media (max-width:820px){.stage{grid-template-columns:1fr}form{grid-template-columns:1fr}}
+.cl-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line)}
+table.cl{min-width:640px}
+table.cl th{background:var(--band);color:var(--bandt);text-align:center;font-size:14px;padding:8px 6px}
+table.cl th:first-child{text-align:left;padding-left:12px}
+table.cl td{padding:6px;text-align:center;font-size:14px}
+table.cl td:first-child{text-align:left;padding-left:12px;width:38%}
+table.cl tbody tr:nth-child(even){background:var(--hl)}
+table.cl input[type=checkbox]{width:18px;height:18px}
+</style>
+</head>
+<body>
+<div class="top"><h1>Residence page: proposed menu</h1><p>Sample residence and sample data only. Tap the menu items to preview each page.</p></div>
+<div class="stage">
+<div>
+<div class="switch"><button id="bNow" aria-pressed="false">Today</button><button id="bNew" aria-pressed="true">Proposed</button></div>
+<div class="phone" id="menu"></div>
+</div>
+<div class="view" id="view"></div>
+</div>
+<script>
+var NOW=[{g:'Information',i:['Add Individual','Residence Details']},{g:'Documents',i:['Emergency Response Drill','Residence Documents']}];
+var NEW=NOW.concat([{g:'Shift Exchange',n:1,i:['Sharps and Knife Count at Shift Exchange','Shift Exchange Forms']},{g:'Tasks',n:1,i:['Morning Shift Tasks','Afternoon Shift Tasks','Night Shift Tasks']}]);
+var mode='new',cur='Shift Exchange Forms';
+var sharps=[['Kitchen knives',6],['Scissors',3],['Razors (locked box)',4]];
+var cnt={},done={};
+var TASKS={'Morning Shift Tasks':{h:'7:00 AM to 3:00 PM',t:['Wake and support morning routines','Medication check and sign-off','Breakfast and kitchen cleanup','Review night shift communication log','Support school or community activity']},
+'Afternoon Shift Tasks':{h:'3:00 PM to 11:00 PM',t:['Receive handover from morning shift','Supervise homework and recreation','Prepare dinner and check menu plan','Vehicle check and mileage log','Evening medication and sign-off']},
+'Night Shift Tasks':{h:'11:00 PM to 7:00 AM',t:['Room checks and log times','Lock-up: doors, windows, stove','Laundry and chemical closet check','Update communication log','Prepare handover for morning shift']}};
+var $=function(i){return document.getElementById(i)};
+var rec={},tv={m:'list'},STAFF=['None','Staff A','Staff B','Staff C'],SITE='Sample Respite Home';
+var CH={
+'Morning Shift Tasks':['Shift exchange','PS shower / dressing routine','PS breakfast','PS lunch (prepare for school or at home; package 1pm meds for school)','PS Schedule (i.e. school drop off, community outing, etc.)','Sanitizing all surfaces, including fronts of appliances','Laundry (as needed)','Dishes','Sweep / Vacuum','Make PS bed / tidy room','Deep Clean PS Bedroom','Deep Clean Staff Room','PS Schedule (i.e. school pick up)','All garbage and items removed from the car','Documentation / Confirm Hours'],
+'Afternoon Shift Tasks':['Shift exchange','PS Schedule (i.e. community outing, etc.)','All garbage and items removed from the car','PS Dinner','Vacuum / Wipe down inside of car','Assist with evening routine','Sanitizing all surfaces, including fronts of appliances','Dishes','Sweep / Vacuum','Complete any left-over laundry','Deep Clean Fridge / Check expiry dates on ALL food','Deep Clean inside kitchen cabinets','Documentation / Confirm Hours'],
+'Night Shift Tasks':['Shift exchange','Deep clean bathroom (i.e. sink, tub, toilet, etc.)','Check on PS every 2 hours','Unload dishwasher if required','Ensure resource phone is fully charged','Sanitizing all surfaces, including fronts of appliances','Deep Clean Living room / Sensory Area','Deep Clean Laundry / Dining / Kitchen','Clean inside microwave','Clean under kitchen sink','Organize linen closet','Deep clean oven / stove','Sweep / Mop','Take out Garbage / Recycling (before 7am)','Documentation / Confirm Hours']};
+var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function ckCount(r){var n=0;for(var k in r.c)if(r.c[k])n++;return n}
+function opts(s){return STAFF.map(function(x){return '<option'+(x==s?' selected':'')+'>'+x+'</option>'}).join('')}
+var XR=[{c:'2026-10-23 11:05 PM',run:'8 Hour',shift:'Overnight Shift',d:'2026-10-23',a:'Staff A',b:'None',n:'Menu plan posted. Groceries needed: milk, bread.',k:{},mo:{}}],xs={m:'list'};
+var XF=[['Household',['Cell Phone charged and disinfected','Keys disinfected and exchanged','Activity Schedule posted','Menu Plan posted','All Floors swept &amp; mopped w/ disinfectant cleaner','Recycling / Garbage can emptied &amp; disinfected','Doorknobs, light switches &amp; any high touch surfaces disinfected','Window &amp; baseboards cleaned as needed']],
+['PS Update',['Recent Critical Incidents discussed','Behaviour discussed including positive behaviours, strengths','Consistency Guidelines discussed','Activities discussed','Appointments entered on ShareVision','Token economy/allowance update','Updates discussed','Meds in stock &amp; locked up','Maintenance request emailed','IBEX completed – time entry','Program Emails Reviewed &amp; Discussed']],
+['Checked &amp; Initialed Together',['Mar Sheet Complete','Blister Pack Checked','Knife Count Completed','Resource Cleanliness Discussed','Grocery Balance Noted $','$:Grocery balance','Recreation counted together $','$:Recreation balance','Clothing Balance counted together $','$:Clothing balance']],
+['Kitchen &amp; Dining Room',['Stove front/ top and oven clean including under','Dishes washed, dried &amp; put away after every meal','Kettle, coffee maker, toaster, microwave, etc. clean &amp; disinfected','Sinks and counters cleaned &amp; disinfected','Fridge cleaned &amp; expired foods removed &amp; handle disinfected','Cupboard doors, knobs &amp; drawers cleaned &amp; disinfected','Table &amp; chairs washed &amp; disinfected']],
+['Staff Bedroom / Office',['Bed stripped &amp; bedding washed','Computer keyboard wiped with disinfectant cloth - no sprays to be used.','Computer desk &amp; mouse with disinfectant','All furniture dusted']],
+['Bathroom',['Sink, shower and toilet cleaned &amp; disinfected','Mirror cleaned &amp; polished']],
+['Living Room',['Furniture dusted &amp; polished']],
+['Laundry',['In washing machine or dryer or basket']],
+['Yard &amp; Deck',['Lawn mowed &amp; weeded as needed','Weeds/Grass clippings removed as needed','Grass watered on watering day','Driveway shovelled in winter','Deck tidy','Garbage removed – check for weapons/ items not needed (shovels, tools, etc.)']]];
+function exchangeView(v){
+var W=SITE;
+if(xs.m=='list'){
+var rows=XR.length?XR.map(function(r,i){return '<tr class="xr" data-i="'+i+'"><td>'+W+'</td><td>'+r.c+'</td><td>'+r.a+'</td><td class="cut">'+(r.n||'')+'</td></tr>'}).join(''):'<tr><td colspan="4" class="empty">No records to display</td></tr>';
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+W+'</span> / <b>Shift Exchange Forms</b></div><div class="gl"></div>'+(xs.msg?'<div class="toast" role="status">'+xs.msg+'</div>':'')+'<div class="xc"><div class="xt">Shift Exchange Forms</div><div class="dots"></div><button class="add" id="xadd"><i>+</i>Add New Item</button><div class="wrap"><table class="gx"><thead><tr><th>Residence<span class="fi">&#9662;</span></th><th>Created<span class="fi">&#9662;</span></th><th>Staff Name<span class="fi">&#9662;</span></th><th>Communication Update (Not PS spe...<span class="fi">&#9662;</span></th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="pg"><span class="arr">&#9664;</span><b>'+(XR.length?1:0)+'</b><span class="arr">&#9654;</span><span class="info">'+(XR.length?'1 - '+XR.length+' of '+XR.length+' items':'No items to display')+'</span></div></div></div>';
+xs.msg='';
+$('xadd').onclick=function(){xs={m:'form',i:null};view()};
+v.querySelectorAll('.xr').forEach(function(t){t.onclick=function(){xs={m:'form',i:+t.dataset.i};view()}});return}
+var r=xs.i===null?{run:'8 Hour',shift:'',d:new Date().toISOString().slice(0,10),a:'None',b:'None',n:'',k:{},mo:{}}:XR[xs.i],T=xs.i===null?'New Item':'Edit Item';
+function radios(nm,vals,sel){return vals.map(function(x){return '<div><label class="cb"><input type="radio" name="'+nm+'" value="'+x+'"'+(x==sel?' checked':'')+'> '+x+'</label></div>'}).join('')}
+function warn(id){return '<div class="alert" id="'+id+'" role="alert" hidden>&#9888; There are items in this form that require your attention</div>'}
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Home</span> / <span>Residences</span> / <span>'+W+'</span> / <span>Shift Exchange Forms</span> / <b>'+T+'</b></div><div class="gl"></div><div class="acts"><button class="act" id="xsave"><i class="ok">&#10003;</i>Save</button><button class="act" id="xcancel"><i class="no">&minus;</i>Cancel</button></div><div class="ftitle">Shift Exchange Forms - '+T+'</div>'+warn('W1')+
+'<div class="fr"><span class="lb">Currently running</span><div>'+radios('run',['8 Hour','12 Hour','24 Hour'],r.run)+'</div></div>'+
+'<div class="fr" id="rs"><span class="lb">Which Shift <b class="req">*</b></span><div>'+radios('shift',['Day Shift','Afternoon Shift','Overnight Shift'],r.shift)+'</div></div>'+
+'<div class="fr"><label class="lb" for="xr">Residence</label><input type="text" id="xr" value="'+W+'" disabled></div>'+
+'<div class="fr"><label class="lb" for="xd">Date <b class="req">*</b></label><input type="date" id="xd" value="'+r.d+'"></div>'+
+'<div class="fr"><label class="lb" for="xa">Staff Name <b class="req">*</b></label><select id="xa">'+opts(r.a)+'</select></div>'+
+'<div class="fr"><label class="lb" for="xb">Second Staff if applicable</label><select id="xb">'+opts(r.b)+'</select></div>'+
+XF.map(function(s,a){return '<div class="band">'+s[0]+'</div>'+s[1].map(function(t,b){var k=a+'_'+b;if(t.slice(0,2)=='$:')return '<div class="fr"><label class="lb" for="m'+k+'">'+t.slice(2)+'</label><input type="text" inputmode="decimal" id="m'+k+'" value="'+(r.mo[k]||'')+'"></div>';return '<div class="fr"><label class="lb" for="x'+k+'">'+t+'</label><label class="cb"><input type="checkbox" id="x'+k+'"'+(r.k[k]?' checked':'')+'> Confirmed</label></div>'}).join('')}).join('')+
+'<div class="band">Communication update</div><div class="fr"><label class="lb" for="xn">Communication Update (Not PS specific): (List of household needs - groceries, cleaning supplies)</label><textarea id="xn" rows="5">'+r.n+'</textarea></div>'+warn('W2')+'</div>';
+$('xsave').onclick=function(){
+var sh=v.querySelector('input[name=shift]:checked'),d=$('xd').value,a=$('xa').value,bad=!sh||!d||a=='None';
+$('rs').classList.toggle('bad2',!sh);$('xd').classList.toggle('bad',!d);$('xa').classList.toggle('bad',a=='None');
+['W1','W2'].forEach(function(id){$(id).hidden=!bad});
+if(bad){$('W1').scrollIntoView({block:'center'});return}
+var k={},mo={};XF.forEach(function(s,i){s[1].forEach(function(t,j){var q=i+'_'+j;if(t.slice(0,2)=='$:')mo[q]=$('m'+q).value;else k[q]=$('x'+q).checked})});
+var n={c:xs.i===null?new Date().toLocaleString():XR[xs.i].c,run:v.querySelector('input[name=run]:checked').value,shift:sh.value,d:d,a:a,b:$('xb').value,n:$('xn').value,k:k,mo:mo};
+if(xs.i===null)XR.unshift(n);else XR[xs.i]=n;
+xs={m:'list',msg:'Item saved'};view()};
+$('xcancel').onclick=function(){xs={m:'list'};view()}}
+function taskView(v){
+var R=rec[cur]||(rec[cur]=[{d:'2026-10-23',a:'Staff A',b:'None',c:{}}]);
+var S=[[cur.replace('Tasks','Chores'),CH[cur]]];
+if(tv.m=='list'){
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+SITE+'</span> / <b>'+cur+' - '+SITE+'</b></div><div class="gl"></div>'+(tv.msg?'<div class="toast" role="status">'+tv.msg+'</div>':'')+'<div class="stt">'+cur+'</div><div class="dots"></div><button class="plus" id="add" aria-label="Add new item" title="Add New Item">+</button><div class="wrap"><table class="g"><thead><tr><th>Date</th><th>Residence</th><th>Staff 1</th><th>Staff 2</th><th></th></tr></thead><tbody>'+R.map(function(r,i){return '<tr><td>'+r.d+'</td><td>'+SITE+'</td><td>'+(r.a=='None'?'':r.a)+'</td><td>'+(r.b=='None'?'':r.b)+'</td><td><button class="pen" data-i="'+i+'" aria-label="Edit item">&#9998;</button></td></tr>'}).join('')+'</tbody></table></div></div>';
+tv.msg='';
+$('add').onclick=function(){tv={m:'form',i:null};view()};
+v.querySelectorAll('.pen').forEach(function(b){b.onclick=function(){tv={m:'form',i:+b.dataset.i};view()}});return}
+var r=tv.i===null?{d:'',a:'None',b:'None',c:{}}:R[tv.i];
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Home</span> / <span>Residences</span> / <span>'+SITE+'</span> / <span>'+cur+'</span> / <b>'+(tv.i===null?'New Item':'Edit Item')+'</b></div><div class="gl"></div><div class="acts"><button class="act" id="sv-save"><i class="ok">&#10003;</i>Save</button><button class="act" id="sv-cancel"><i class="no">&minus;</i>Cancel</button></div><div class="ftitle">'+cur+' - '+SITE+' - '+(tv.i===null?'New Item':'Edit Item')+'</div>'+
+'<div class="fr"><label class="lb" for="fd">Date</label><input type="date" id="fd" value="'+r.d+'"></div><div class="fr"><label class="lb" for="fr">Residence</label><input type="text" id="fr" value="'+SITE+'" disabled></div><div class="fr"><label class="lb" for="fa">Staff 1</label><select id="fa">'+opts(r.a)+'</select></div><div class="fr"><label class="lb" for="fb">Staff 2</label><select id="fb">'+opts(r.b)+'</select></div>'+
+S.map(function(s,a){return '<div class="band">'+s[0]+'</div>'+s[1].map(function(t,b){var k=a+'_'+b;return '<div class="fr"><label class="lb" for="k'+k+'">'+t+'</label><input type="checkbox" id="k'+k+'"'+(r.c[k]?' checked':'')+'></div>'}).join('')}).join('')+'</div>';
+$('sv-save').onclick=function(){var d=$('fd').value;if(!d){$('fd').classList.add('bad');$('fd').focus();return}
+var c={};S.forEach(function(s,a){s[1].forEach(function(_,b){c[a+'_'+b]=$('k'+a+'_'+b).checked})});
+var n={d:d,a:$('fa').value,b:$('fb').value,c:c};
+if(tv.i===null)R.unshift(n);else R[tv.i]=n;
+tv={m:'list',msg:'Item saved'};view()};
+$('sv-cancel').onclick=function(){tv={m:'list'};view()}}
+function menu(){var d=mode=='new'?NEW:NOW;
+$('menu').innerHTML='<div class="hd">Axis Family Resources<small>Sample Respite Home</small></div>'+d.map(function(x){
+return '<div class="grp">'+x.g+(x.n?'<span class="tag">Proposed</span>':'')+'</div>'+x.i.map(function(y){
+var live=x.n||false;return '<button class="item'+(x.n?' newbox':' static')+'" data-v="'+y+'"'+(cur==y&&x.n?' aria-current="true"':'')+'>'+y+'</button>'}).join('')}).join('')+
+'<div class="legend">'+(mode=='new'?'Green edge marks what would be added to the Residence page.':'This is the Residence menu as it stands today.')+'</div>';
+$('bNow').setAttribute('aria-pressed',mode=='now');$('bNew').setAttribute('aria-pressed',mode=='new')}
+function ctx(){return '<div class="ctx">Sample Respite Home currently serves:<div class="ppl"><span>Person Served A</span><span>Person Served B</span><span>Person Served C</span></div></div>'}
+function view(){var v=$('view');
+if(mode=='now'){v.innerHTML='<h2>Residence Details</h2><div class="in">'+ctx()+'<p>Today the Shift Exchange items live on each Person Served profile. On a program with several people, staff open each profile to complete or find the same handover.</p></div>';return}
+if(cur=='Shift Exchange Forms')return exchangeView(v);
+if(cur.indexOf('Sharps')==0){v.innerHTML='<h2>Sharps and Knife Count at Shift Exchange</h2><div class="in">'+ctx()+
+'<div class="wrap"><table><thead><tr><th>Item</th><th>Expected</th><th>Counted</th><th>Result</th></tr></thead><tbody>'+sharps.map(function(r,i){var c=cnt[i];var res=c===undefined||c===''?'':(+c==r[1]?'<span class="st ok">Match</span>':'<span class="st p">Check</span>');return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td><input type="number" min="0" data-i="'+i+'" value="'+(c===undefined?'':c)+'"></td><td>'+res+'</td></tr>'}).join('')+'</tbody></table></div><p class="meta">One count per shift change for the whole residence, not one per person.</p></div>';
+v.querySelectorAll('input').forEach(function(x){x.onchange=function(){cnt[x.dataset.i]=x.value;view()}});return}
+taskView(v)}
+$('menu').onclick=function(e){var b=e.target.closest('.item');if(b&&!b.classList.contains('static')){cur=b.dataset.v;tv={m:'list'};xs={m:'list'};menu();view()}};
+$('bNow').onclick=function(){mode='now';menu();view()};$('bNew').onclick=function(){mode='new';menu();view()};
+menu();view();
+</script>
+</body>
+</html>

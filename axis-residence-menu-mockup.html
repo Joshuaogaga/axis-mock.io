@@ -114,19 +114,19 @@ table.cl input[type=checkbox]{width:18px;height:18px}
 </div>
 <script>
 var NOW=[{g:'Information',i:['Add Individual','Residence Details']},{g:'Documents',i:['Emergency Response Drill','Residence Documents']}];
-var NEW=NOW.concat([{g:'Shift Exchange',n:1,i:['Sharps and Knife Count at Shift Exchange','Shift Exchange Forms']},{g:'Tasks',n:1,i:['Morning Shift Tasks','Afternoon Shift Tasks','Night Shift Tasks']}]);
+var NEW=NOW.concat([{g:'Shift Exchange',n:1,i:['Sharps and Knife Count at Shift Exchange','Shift Exchange Forms']},{g:'Tasks',n:1,i:['Day Tasks','Night Tasks']}]);
 var mode='new',cur='Shift Exchange Forms';
 var sharps=[['Kitchen knives',6],['Scissors',3],['Razors (locked box)',4]];
 var cnt={},done={};
-var TASKS={'Morning Shift Tasks':{h:'7:00 AM to 3:00 PM',t:['Wake and support morning routines','Medication check and sign-off','Breakfast and kitchen cleanup','Review night shift communication log','Support school or community activity']},
-'Afternoon Shift Tasks':{h:'3:00 PM to 11:00 PM',t:['Receive handover from morning shift','Supervise homework and recreation','Prepare dinner and check menu plan','Vehicle check and mileage log','Evening medication and sign-off']},
-'Night Shift Tasks':{h:'11:00 PM to 7:00 AM',t:['Room checks and log times','Lock-up: doors, windows, stove','Laundry and chemical closet check','Update communication log','Prepare handover for morning shift']}};
+var TASKS={'Morning Tasks':{h:'7:00 AM to 3:00 PM',t:['Wake and support morning routines','Medication check and sign-off','Breakfast and kitchen cleanup','Review night shift communication log','Support school or community activity']},
+'Afternoon Tasks':{h:'3:00 PM to 11:00 PM',t:['Receive handover from morning shift','Supervise homework and recreation','Prepare dinner and check menu plan','Vehicle check and mileage log','Evening medication and sign-off']},
+'Night Tasks':{h:'11:00 PM to 7:00 AM',t:['Room checks and log times','Lock-up: doors, windows, stove','Laundry and chemical closet check','Update communication log','Prepare handover for morning shift']}};
 var $=function(i){return document.getElementById(i)};
 var rec={},tv={m:'list'},STAFF=['None','Staff A','Staff B','Staff C'],SITE='Sample Respite Home';
 var CH={
-'Morning Shift Tasks':['Shift exchange','PS shower / dressing routine','PS breakfast','PS lunch (prepare for school or at home; package 1pm meds for school)','PS Schedule (i.e. school drop off, community outing, etc.)','Sanitizing all surfaces, including fronts of appliances','Laundry (as needed)','Dishes','Sweep / Vacuum','Make PS bed / tidy room','Deep Clean PS Bedroom','Deep Clean Staff Room','PS Schedule (i.e. school pick up)','All garbage and items removed from the car','Documentation / Confirm Hours'],
-'Afternoon Shift Tasks':['Shift exchange','PS Schedule (i.e. community outing, etc.)','All garbage and items removed from the car','PS Dinner','Vacuum / Wipe down inside of car','Assist with evening routine','Sanitizing all surfaces, including fronts of appliances','Dishes','Sweep / Vacuum','Complete any left-over laundry','Deep Clean Fridge / Check expiry dates on ALL food','Deep Clean inside kitchen cabinets','Documentation / Confirm Hours'],
-'Night Shift Tasks':['Shift exchange','Deep clean bathroom (i.e. sink, tub, toilet, etc.)','Check on PS every 2 hours','Unload dishwasher if required','Ensure resource phone is fully charged','Sanitizing all surfaces, including fronts of appliances','Deep Clean Living room / Sensory Area','Deep Clean Laundry / Dining / Kitchen','Clean inside microwave','Clean under kitchen sink','Organize linen closet','Deep clean oven / stove','Sweep / Mop','Take out Garbage / Recycling (before 7am)','Documentation / Confirm Hours']};
+'Morning Tasks':['Shift exchange','PS shower / dressing routine','PS breakfast','PS lunch (prepare for school or at home; package 1pm meds for school)','PS Schedule (i.e. school drop off, community outing, etc.)','Sanitizing all surfaces, including fronts of appliances','Laundry (as needed)','Dishes','Sweep / Vacuum','Make PS bed / tidy room','Deep Clean PS Bedroom','Deep Clean Staff Room','PS Schedule (i.e. school pick up)','All garbage and items removed from the car','Documentation / Confirm Hours'],
+'Afternoon Tasks':['Shift exchange','PS Schedule (i.e. community outing, etc.)','All garbage and items removed from the car','PS Dinner','Vacuum / Wipe down inside of car','Assist with evening routine','Sanitizing all surfaces, including fronts of appliances','Dishes','Sweep / Vacuum','Complete any left-over laundry','Deep Clean Fridge / Check expiry dates on ALL food','Deep Clean inside kitchen cabinets','Documentation / Confirm Hours'],
+'Night Tasks':['Shift exchange','Deep clean bathroom (i.e. sink, tub, toilet, etc.)','Check on PS every 2 hours','Unload dishwasher if required','Ensure resource phone is fully charged','Sanitizing all surfaces, including fronts of appliances','Deep Clean Living room / Sensory Area','Deep Clean Laundry / Dining / Kitchen','Clean inside microwave','Clean under kitchen sink','Organize linen closet','Deep clean oven / stove','Sweep / Mop','Take out Garbage / Recycling (before 7am)','Documentation / Confirm Hours']};
 var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function ckCount(r){var n=0;for(var k in r.c)if(r.c[k])n++;return n}
 function opts(s){return STAFF.map(function(x){return '<option'+(x==s?' selected':'')+'>'+x+'</option>'}).join('')}
@@ -170,21 +170,31 @@ var n={c:xs.i===null?new Date().toLocaleString():XR[xs.i].c,run:v.querySelector(
 if(xs.i===null)XR.unshift(n);else XR[xs.i]=n;
 xs={m:'list',msg:'Item saved'};view()};
 $('xcancel').onclick=function(){xs={m:'list'};view()}}
+var RUNS={'8 Hour':1,'12 Hour':2,'24 Hour':3};
+function plan(run,part){if(cur=='Day Tasks')return run=='8 Hour'?[part]:['Morning','Afternoon'];return ['Night']}
+function blocks(run,part){var P=plan(run,part),n=P.length,seen={},hold={'Shift exchange':1,'Documentation / Confirm Hours':1},out=[['Start Of Shift',['Shift exchange']]];
+P.forEach(function(nm,i){var list=CH[nm+' Tasks'].filter(function(t){if(hold[t]||seen[t])return false;seen[t]=1;return true});out.push([nm+' Block'+(n>1?' ('+(i+1)+' of '+n+')':''),list])});
+out.push(['End Of Shift',['Documentation / Confirm Hours']]);return out}
 function taskView(v){
-var R=rec[cur]||(rec[cur]=[{d:'2026-10-23',a:'Staff A',b:'None',c:{}}]);
-var S=[[cur.replace('Tasks','Chores'),CH[cur]]];
+var R=rec[cur]||(rec[cur]=[{d:'2026-10-23',run:'8 Hour',part:'Morning',a:'Staff A',b:'None',c:{'Shift exchange':1}}]);
 if(tv.m=='list'){
-v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+SITE+'</span> / <b>'+cur+' - '+SITE+'</b></div><div class="gl"></div>'+(tv.msg?'<div class="toast" role="status">'+tv.msg+'</div>':'')+'<div class="stt">'+cur+'</div><div class="dots"></div><button class="plus" id="add" aria-label="Add new item" title="Add New Item">+</button><div class="wrap"><table class="g"><thead><tr><th>Date</th><th>Residence</th><th>Staff 1</th><th>Staff 2</th><th></th></tr></thead><tbody>'+R.map(function(r,i){return '<tr><td>'+r.d+'</td><td>'+SITE+'</td><td>'+(r.a=='None'?'':r.a)+'</td><td>'+(r.b=='None'?'':r.b)+'</td><td><button class="pen" data-i="'+i+'" aria-label="Edit item">&#9998;</button></td></tr>'}).join('')+'</tbody></table></div></div>';
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+SITE+'</span> / <b>'+cur+' - '+SITE+'</b></div><div class="gl"></div>'+(tv.msg?'<div class="toast" role="status">'+tv.msg+'</div>':'')+'<div class="stt">'+cur+'</div><div class="dots"></div><button class="plus" id="add" aria-label="Add new item" title="Add New Item">+</button><div class="wrap"><table class="g"><thead><tr><th>Date</th><th>Residence</th><th>Running</th><th>Staff 1</th><th>Staff 2</th><th></th></tr></thead><tbody>'+R.map(function(r,i){return '<tr><td>'+r.d+'</td><td>'+SITE+'</td><td>'+r.run+(cur=='Day Tasks'&&r.run=='8 Hour'?' ('+r.part+')':'')+'</td><td>'+(r.a=='None'?'':r.a)+'</td><td>'+(r.b=='None'?'':r.b)+'</td><td><button class="pen" data-i="'+i+'" aria-label="Edit item">&#9998;</button></td></tr>'}).join('')+'</tbody></table></div></div>';
 tv.msg='';
 $('add').onclick=function(){tv={m:'form',i:null};view()};
 v.querySelectorAll('.pen').forEach(function(b){b.onclick=function(){tv={m:'form',i:+b.dataset.i};view()}});return}
-var r=tv.i===null?{d:'',a:'None',b:'None',c:{}}:R[tv.i];
+var r=tv.draft||(tv.i===null?{d:'',run:'8 Hour',part:'Morning',a:'None',b:'None',c:{}}:R[tv.i]);tv.draft=null;
+var S=blocks(r.run,r.part),isDay=cur=='Day Tasks';
 v.innerHTML='<div class="sv"><div class="crumbs"><span>Home</span> / <span>Residences</span> / <span>'+SITE+'</span> / <span>'+cur+'</span> / <b>'+(tv.i===null?'New Item':'Edit Item')+'</b></div><div class="gl"></div><div class="acts"><button class="act" id="sv-save"><i class="ok">&#10003;</i>Save</button><button class="act" id="sv-cancel"><i class="no">&minus;</i>Cancel</button></div><div class="ftitle">'+cur+' - '+SITE+' - '+(tv.i===null?'New Item':'Edit Item')+'</div>'+
+'<div class="fr"><label class="lb">Currently running</label><div style="display:flex;gap:18px;flex-wrap:wrap">'+Object.keys(RUNS).filter(function(k){return isDay||k!='24 Hour'}).map(function(k){return '<label class="cb" style="display:flex;gap:6px;align-items:center"><input type="radio" name="run" value="'+k+'"'+(r.run==k?' checked':'')+'> '+k+'</label>'}).join('')+'</div></div>'+
+(isDay&&r.run=='8 Hour'?'<div class="fr"><label class="lb">Which part of the day</label><div style="display:flex;gap:18px;flex-wrap:wrap">'+['Morning','Afternoon'].map(function(k){return '<label class="cb" style="display:flex;gap:6px;align-items:center"><input type="radio" name="part" value="'+k+'"'+(r.part==k?' checked':'')+'> '+k+'</label>'}).join('')+'</div></div>':'')+
+'<div class="fr"><label class="lb"></label><div class="hint" style="color:var(--mute);font-size:13px">The sections below follow the shift length.</div></div>'+
 '<div class="fr"><label class="lb" for="fd">Date</label><input type="date" id="fd" value="'+r.d+'"></div><div class="fr"><label class="lb" for="fr">Residence</label><input type="text" id="fr" value="'+SITE+'" disabled></div><div class="fr"><label class="lb" for="fa">Staff 1</label><select id="fa">'+opts(r.a)+'</select></div><div class="fr"><label class="lb" for="fb">Staff 2</label><select id="fb">'+opts(r.b)+'</select></div>'+
-S.map(function(s,a){return '<div class="band">'+s[0]+'</div>'+s[1].map(function(t,b){var k=a+'_'+b;return '<div class="fr"><label class="lb" for="k'+k+'">'+t+'</label><input type="checkbox" id="k'+k+'"'+(r.c[k]?' checked':'')+'></div>'}).join('')}).join('')+'</div>';
+S.map(function(s,a){return '<div class="band">'+s[0]+'</div>'+s[1].map(function(t,b){var k=a+'_'+b;return '<div class="fr"><label class="lb" for="k'+k+'">'+t+'</label><input type="checkbox" id="k'+k+'" data-t="'+t+'"'+(r.c[t]?' checked':'')+'></div>'}).join('')}).join('')+'</div>';
+function grab(){var c={};v.querySelectorAll('input[data-t]').forEach(function(x){if(x.checked)c[x.dataset.t]=1});return c}
+function pick(){var q=v.querySelector('input[name=part]:checked');return {d:$('fd').value,run:v.querySelector('input[name=run]:checked').value,part:q?q.value:r.part,a:$('fa').value,b:$('fb').value,c:grab()}}
+v.querySelectorAll('input[name=run],input[name=part]').forEach(function(x){x.onchange=function(){tv.draft=pick();view()}});
 $('sv-save').onclick=function(){var d=$('fd').value;if(!d){$('fd').classList.add('bad');$('fd').focus();return}
-var c={};S.forEach(function(s,a){s[1].forEach(function(_,b){c[a+'_'+b]=$('k'+a+'_'+b).checked})});
-var n={d:d,a:$('fa').value,b:$('fb').value,c:c};
+var n=pick();
 if(tv.i===null)R.unshift(n);else R[tv.i]=n;
 tv={m:'list',msg:'Item saved'};view()};
 $('sv-cancel').onclick=function(){tv={m:'list'};view()}}

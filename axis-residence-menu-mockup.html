@@ -101,6 +101,13 @@ table.cl td{padding:6px;text-align:center;font-size:14px}
 table.cl td:first-child{text-align:left;padding-left:12px;width:38%}
 table.cl tbody tr:nth-child(even){background:var(--hl)}
 table.cl input[type=checkbox]{width:18px;height:18px}
+.fi{cursor:pointer;background:none;color:inherit;font-family:inherit;padding:0}
+.fi.on{background:var(--ink);color:var(--panel)}
+.fpop{position:absolute;z-index:5;top:100%;left:0;background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.2);padding:10px;min-width:230px;font-weight:400;font-size:14px;text-align:left}
+.fpop select,.fpop input{width:100%;margin-bottom:8px}
+.fpop button{margin-right:6px;font:inherit;padding:4px 12px;border:1px solid var(--line);background:var(--hl);color:var(--ink);border-radius:3px;cursor:pointer}
+.fnote{color:var(--mute);font-size:13px;margin:0 0 8px}
+th{position:relative}
 </style>
 </head>
 <body>
@@ -114,19 +121,19 @@ table.cl input[type=checkbox]{width:18px;height:18px}
 </div>
 <script>
 var NOW=[{g:'Information',i:['Add Individual','Residence Details']},{g:'Documents',i:['Emergency Response Drill','Residence Documents']}];
-var NEW=NOW.concat([{g:'Shift Exchange',n:1,i:['Sharps and Knife Count at Shift Exchange','Shift Exchange Forms']},{g:'Tasks',n:1,i:['Day Tasks','Night Tasks']}]);
+var NEW=NOW.concat([{g:'Shift Exchange',n:1,i:['Sharps and Knife Count at Shift Exchange','Shift Exchange Forms']},{g:'Chores',n:1,i:['Day Chores','Night Chores']}]);
 var mode='new',cur='Shift Exchange Forms';
 var sharps=[['Kitchen knives',6],['Scissors',3],['Razors (locked box)',4]];
 var cnt={},done={};
-var TASKS={'Morning Tasks':{h:'7:00 AM to 3:00 PM',t:['Wake and support morning routines','Medication check and sign-off','Breakfast and kitchen cleanup','Review night shift communication log','Support school or community activity']},
-'Afternoon Tasks':{h:'3:00 PM to 11:00 PM',t:['Receive handover from morning shift','Supervise homework and recreation','Prepare dinner and check menu plan','Vehicle check and mileage log','Evening medication and sign-off']},
-'Night Tasks':{h:'11:00 PM to 7:00 AM',t:['Room checks and log times','Lock-up: doors, windows, stove','Laundry and chemical closet check','Update communication log','Prepare handover for morning shift']}};
+var TASKS={'Morning Chores':{h:'7:00 AM to 3:00 PM',t:['Wake and support morning routines','Medication check and sign-off','Breakfast and kitchen cleanup','Review night shift communication log','Support school or community activity']},
+'Afternoon Chores':{h:'3:00 PM to 11:00 PM',t:['Receive handover from morning shift','Supervise homework and recreation','Prepare dinner and check menu plan','Vehicle check and mileage log','Evening medication and sign-off']},
+'Night Chores':{h:'11:00 PM to 7:00 AM',t:['Room checks and log times','Lock-up: doors, windows, stove','Laundry and chemical closet check','Update communication log','Prepare handover for morning shift']}};
 var $=function(i){return document.getElementById(i)};
 var rec={},tv={m:'list'},STAFF=['None','Staff A','Staff B','Staff C'],SITE='Sample Respite Home';
 var CH={
-'Morning Tasks':['Shift exchange','PS shower / dressing routine','PS breakfast','PS lunch (prepare for school or at home; package 1pm meds for school)','PS Schedule (i.e. school drop off, community outing, etc.)','Sanitizing all surfaces, including fronts of appliances','Laundry (as needed)','Dishes','Sweep / Vacuum','Make PS bed / tidy room','Deep Clean PS Bedroom','Deep Clean Staff Room','PS Schedule (i.e. school pick up)','All garbage and items removed from the car','Documentation / Confirm Hours'],
-'Afternoon Tasks':['Shift exchange','PS Schedule (i.e. community outing, etc.)','All garbage and items removed from the car','PS Dinner','Vacuum / Wipe down inside of car','Assist with evening routine','Sanitizing all surfaces, including fronts of appliances','Dishes','Sweep / Vacuum','Complete any left-over laundry','Deep Clean Fridge / Check expiry dates on ALL food','Deep Clean inside kitchen cabinets','Documentation / Confirm Hours'],
-'Night Tasks':['Shift exchange','Deep clean bathroom (i.e. sink, tub, toilet, etc.)','Check on PS every 2 hours','Unload dishwasher if required','Ensure resource phone is fully charged','Sanitizing all surfaces, including fronts of appliances','Deep Clean Living room / Sensory Area','Deep Clean Laundry / Dining / Kitchen','Clean inside microwave','Clean under kitchen sink','Organize linen closet','Deep clean oven / stove','Sweep / Mop','Take out Garbage / Recycling (before 7am)','Documentation / Confirm Hours']};
+'Morning Chores':['Shift exchange','PS shower / dressing routine','PS breakfast','PS lunch (prepare for school or at home; package 1pm meds for school)','PS Schedule (i.e. school drop off, community outing, etc.)','Sanitizing all surfaces, including fronts of appliances','Laundry (as needed)','Dishes','Sweep / Vacuum','Make PS bed / tidy room','Deep Clean PS Bedroom','Deep Clean Staff Room','PS Schedule (i.e. school pick up)','All garbage and items removed from the car','Documentation / Confirm Hours'],
+'Afternoon Chores':['Shift exchange','PS Schedule (i.e. community outing, etc.)','All garbage and items removed from the car','PS Dinner','Vacuum / Wipe down inside of car','Assist with evening routine','Sanitizing all surfaces, including fronts of appliances','Dishes','Sweep / Vacuum','Complete any left-over laundry','Deep Clean Fridge / Check expiry dates on ALL food','Deep Clean inside kitchen cabinets','Documentation / Confirm Hours'],
+'Night Chores':['Shift exchange','Deep clean bathroom (i.e. sink, tub, toilet, etc.)','Check on PS every 2 hours','Unload dishwasher if required','Ensure resource phone is fully charged','Sanitizing all surfaces, including fronts of appliances','Deep Clean Living room / Sensory Area','Deep Clean Laundry / Dining / Kitchen','Clean inside microwave','Clean under kitchen sink','Organize linen closet','Deep clean oven / stove','Sweep / Mop','Take out Garbage / Recycling (before 7am)','Documentation / Confirm Hours']};
 var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function ckCount(r){var n=0;for(var k in r.c)if(r.c[k])n++;return n}
 function opts(s){return STAFF.map(function(x){return '<option'+(x==s?' selected':'')+'>'+x+'</option>'}).join('')}
@@ -143,10 +150,13 @@ var XF=[['Household',['Cell Phone charged and disinfected','Keys disinfected and
 function exchangeView(v){
 var W=SITE;
 if(xs.m=='list'){
-var rows=XR.length?XR.map(function(r,i){return '<tr class="xr" data-i="'+i+'"><td>'+W+'</td><td>'+r.c+'</td><td>'+r.a+'</td><td class="cut">'+(r.n||'')+'</td></tr>'}).join(''):'<tr><td colspan="4" class="empty">No records to display</td></tr>';
-v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+W+'</span> / <b>Shift Exchange Forms</b></div><div class="gl"></div>'+(xs.msg?'<div class="toast" role="status">'+xs.msg+'</div>':'')+'<div class="xc"><div class="xt">Shift Exchange Forms</div><div class="dots"></div><button class="add" id="xadd"><i>+</i>Add New Item</button><div class="wrap"><table class="gx"><thead><tr><th>Residence<span class="fi">&#9662;</span></th><th>Created<span class="fi">&#9662;</span></th><th>Staff Name<span class="fi">&#9662;</span></th><th>Communication Update (Not PS spe...<span class="fi">&#9662;</span></th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="pg"><span class="arr">&#9664;</span><b>'+(XR.length?1:0)+'</b><span class="arr">&#9654;</span><span class="info">'+(XR.length?'1 - '+XR.length+' of '+XR.length+' items':'No items to display')+'</span></div></div></div>';
+var shown=XR.filter(function(r){return fOk(r.c,fl.XF)}).length;
+var rows=shown?XR.map(function(r,i){if(!fOk(r.c,fl.XF))return '';return '<tr class="xr" data-i="'+i+'"><td>'+W+'</td><td>'+r.c+'</td><td>'+r.a+'</td><td class="cut">'+(r.n||'')+'</td></tr>'}).join(''):'<tr><td colspan="4" class="empty">No records to display</td></tr>';
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+W+'</span> / <b>Shift Exchange Forms</b></div><div class="gl"></div>'+(xs.msg?'<div class="toast" role="status">'+xs.msg+'</div>':'')+'<div class="xc"><div class="xt">Shift Exchange Forms</div><div class="dots"></div>'+fNote('XF')+'<div style="display:flex;align-items:center;gap:14px"><button class="add" id="xadd"><i>+</i>Add New Item</button><button class="pen" id="xexp" style="margin:10px 0 14px">Export Report</button></div><div class="wrap"><table class="gx"><thead><tr><th>Residence<span class="fi">&#9662;</span></th><th>Created'+fHtml('XF')+'</th><th>Staff Name<span class="fi">&#9662;</span></th><th>Communication Update (Not PS spe...<span class="fi">&#9662;</span></th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="pg"><span class="arr">&#9664;</span><b>'+(shown?1:0)+'</b><span class="arr">&#9654;</span><span class="info">'+(shown?'1 - '+shown+' of '+shown+' items':'No items to display')+'</span></div></div></div>';
 xs.msg='';
 $('xadd').onclick=function(){xs={m:'form',i:null};view()};
+fWire('XF',view);
+$('xexp').onclick=function(){rp.src='Shift Exchange Forms';xp={cur:cur};view()};
 v.querySelectorAll('.xr').forEach(function(t){t.onclick=function(){xs={m:'form',i:+t.dataset.i};view()}});return}
 var r=xs.i===null?{run:'8 Hour',shift:'',d:new Date().toISOString().slice(0,10),a:'None',b:'None',n:'',k:{},mo:{}}:XR[xs.i],T=xs.i===null?'New Item':'Edit Item';
 function radios(nm,vals,sel){return vals.map(function(x){return '<div><label class="cb"><input type="radio" name="'+nm+'" value="'+x+'"'+(x==sel?' checked':'')+'> '+x+'</label></div>'}).join('')}
@@ -170,20 +180,30 @@ var n={c:xs.i===null?new Date().toLocaleString():XR[xs.i].c,run:v.querySelector(
 if(xs.i===null)XR.unshift(n);else XR[xs.i]=n;
 xs={m:'list',msg:'Item saved'};view()};
 $('xcancel').onclick=function(){xs={m:'list'};view()}}
+var fl={};
+var OPS={ge:'is after or equal to',le:'is before or equal to',eq:'is equal to'};
+function fOk(d,f){if(!f||!f.val)return true;d=String(d).slice(0,10);return f.op=='ge'?d>=f.val:f.op=='le'?d<=f.val:d==f.val}
+function fHtml(key){var f=fl[key]||{op:'ge',val:''};return '<span class="fi'+(f.val?' on':'')+'" id="fib" role="button" tabindex="0" aria-label="Filter by date">&#9662;</span><div class="fpop" id="fpop" hidden><select id="fop" aria-label="Operator">'+Object.keys(OPS).map(function(k){return '<option value="'+k+'"'+(f.op==k?' selected':'')+'>Is '+OPS[k].slice(3)+'</option>'}).join('')+'</select><input type="date" id="fv" value="'+f.val+'" aria-label="Date"><button id="fgo">Filter</button><button id="fclr">Clear</button></div>'}
+function fNote(key){var f=fl[key];return f&&f.val?'<p class="fnote">Filter: Date '+OPS[f.op]+' '+f.val+'</p>':''}
+function fWire(key,redo){$('fib').onclick=function(e){e.stopPropagation();var P=$('fpop');P.hidden=!P.hidden;if(!P.hidden){var r=$('fib').getBoundingClientRect();P.style.position='fixed';P.style.top=(r.bottom+6)+'px';P.style.left=Math.max(8,Math.min(r.left,innerWidth-250))+'px'}};$('fpop').onclick=function(e){e.stopPropagation()};
+$('fgo').onclick=function(){fl[key]={op:$('fop').value,val:$('fv').value};redo()};$('fclr').onclick=function(){delete fl[key];redo()}}
+function recs(k){return rec[k]||(rec[k]=[{d:'2026-10-23',run:'8 Hour',part:'Morning',a:'Staff A',b:'None',c:{'Shift exchange':1}}])}
 var RUNS={'8 Hour':1,'12 Hour':2,'24 Hour':3};
-function plan(run,part){if(cur=='Day Tasks')return run=='8 Hour'?[part]:['Morning','Afternoon'];return ['Night']}
+function plan(run,part){if(cur=='Day Chores')return run=='8 Hour'?[part]:['Morning','Afternoon'];return ['Night']}
 function blocks(run,part){var P=plan(run,part),n=P.length,seen={},hold={'Shift exchange':1,'Documentation / Confirm Hours':1},out=[['Start Of Shift',['Shift exchange']]];
-P.forEach(function(nm,i){var list=CH[nm+' Tasks'].filter(function(t){if(hold[t]||seen[t])return false;seen[t]=1;return true});out.push([nm+' Block'+(n>1?' ('+(i+1)+' of '+n+')':''),list])});
+P.forEach(function(nm,i){var list=CH[nm+' Chores'].filter(function(t){if(hold[t]||seen[t])return false;seen[t]=1;return true});out.push([nm+' Block'+(n>1?' ('+(i+1)+' of '+n+')':''),list])});
 out.push(['End Of Shift',['Documentation / Confirm Hours']]);return out}
 function taskView(v){
-var R=rec[cur]||(rec[cur]=[{d:'2026-10-23',run:'8 Hour',part:'Morning',a:'Staff A',b:'None',c:{'Shift exchange':1}}]);
+var R=recs(cur);
 if(tv.m=='list'){
-v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+SITE+'</span> / <b>'+cur+' - '+SITE+'</b></div><div class="gl"></div>'+(tv.msg?'<div class="toast" role="status">'+tv.msg+'</div>':'')+'<div class="stt">'+cur+'</div><div class="dots"></div><button class="plus" id="add" aria-label="Add new item" title="Add New Item">+</button><div class="wrap"><table class="g"><thead><tr><th>Date</th><th>Residence</th><th>Running</th><th>Staff 1</th><th>Staff 2</th><th></th></tr></thead><tbody>'+R.map(function(r,i){return '<tr><td>'+r.d+'</td><td>'+SITE+'</td><td>'+r.run+(cur=='Day Tasks'&&r.run=='8 Hour'?' ('+r.part+')':'')+'</td><td>'+(r.a=='None'?'':r.a)+'</td><td>'+(r.b=='None'?'':r.b)+'</td><td><button class="pen" data-i="'+i+'" aria-label="Edit item">&#9998;</button></td></tr>'}).join('')+'</tbody></table></div></div>';
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Residences</span> / <span>'+SITE+'</span> / <b>'+cur+' - '+SITE+'</b></div><div class="gl"></div>'+(tv.msg?'<div class="toast" role="status">'+tv.msg+'</div>':'')+'<div class="stt">'+cur+'</div><div class="dots"></div>'+fNote(cur)+'<button class="plus" id="add" aria-label="Add new item" title="Add New Item">+</button><button class="pen" id="exp" style="margin-left:12px;height:38px;vertical-align:top">Export Report</button><div class="wrap"><table class="g"><thead><tr><th>Date'+fHtml(cur)+'</th><th>Residence</th><th>Running</th><th>Staff 1</th><th>Staff 2</th><th></th></tr></thead><tbody>'+R.map(function(r,i){if(!fOk(r.d,fl[cur]))return '';return '<tr><td>'+r.d+'</td><td>'+SITE+'</td><td>'+r.run+(cur=='Day Chores'&&r.run=='8 Hour'?' ('+r.part+')':'')+'</td><td>'+(r.a=='None'?'':r.a)+'</td><td>'+(r.b=='None'?'':r.b)+'</td><td><button class="pen" data-i="'+i+'" aria-label="Edit item">&#9998;</button></td></tr>'}).join('')+'</tbody></table></div></div>';
 tv.msg='';
 $('add').onclick=function(){tv={m:'form',i:null};view()};
-v.querySelectorAll('.pen').forEach(function(b){b.onclick=function(){tv={m:'form',i:+b.dataset.i};view()}});return}
+fWire(cur,view);
+$('exp').onclick=function(){rp.src='Chores';rp.shift=cur.split(' ')[0];xp={cur:cur};view()};
+v.querySelectorAll('.pen[data-i]').forEach(function(b){b.onclick=function(){tv={m:'form',i:+b.dataset.i};view()}});return}
 var r=tv.draft||(tv.i===null?{d:'',run:'8 Hour',part:'Morning',a:'None',b:'None',c:{}}:R[tv.i]);tv.draft=null;
-var S=blocks(r.run,r.part),isDay=cur=='Day Tasks';
+var S=blocks(r.run,r.part),isDay=cur=='Day Chores';
 v.innerHTML='<div class="sv"><div class="crumbs"><span>Home</span> / <span>Residences</span> / <span>'+SITE+'</span> / <span>'+cur+'</span> / <b>'+(tv.i===null?'New Item':'Edit Item')+'</b></div><div class="gl"></div><div class="acts"><button class="act" id="sv-save"><i class="ok">&#10003;</i>Save</button><button class="act" id="sv-cancel"><i class="no">&minus;</i>Cancel</button></div><div class="ftitle">'+cur+' - '+SITE+' - '+(tv.i===null?'New Item':'Edit Item')+'</div>'+
 '<div class="fr"><label class="lb">Currently running</label><div style="display:flex;gap:18px;flex-wrap:wrap">'+Object.keys(RUNS).filter(function(k){return isDay||k!='24 Hour'}).map(function(k){return '<label class="cb" style="display:flex;gap:6px;align-items:center"><input type="radio" name="run" value="'+k+'"'+(r.run==k?' checked':'')+'> '+k+'</label>'}).join('')+'</div></div>'+
 (isDay&&r.run=='8 Hour'?'<div class="fr"><label class="lb">Which part of the day</label><div style="display:flex;gap:18px;flex-wrap:wrap">'+['Morning','Afternoon'].map(function(k){return '<label class="cb" style="display:flex;gap:6px;align-items:center"><input type="radio" name="part" value="'+k+'"'+(r.part==k?' checked':'')+'> '+k+'</label>'}).join('')+'</div></div>':'')+
@@ -198,6 +218,25 @@ var n=pick();
 if(tv.i===null)R.unshift(n);else R[tv.i]=n;
 tv={m:'list',msg:'Item saved'};view()};
 $('sv-cancel').onclick=function(){tv={m:'list'};view()}}
+var xp=null,rp={src:'Chores',shift:'All',from:'2026-10-01',to:'2026-10-31'};
+function repData(){var f=rp.from||'0000',t=rp.to||'9999',cols,rows=[];
+if(rp.src=='Chores'){cols=['Date','Shift','Running','Staff 1','Staff 2','Chores done'];['Day Chores','Night Chores'].forEach(function(k){var sh=k.split(' ')[0];if(rp.shift!='All'&&rp.shift!=sh)return;recs(k).forEach(function(r){if(r.d<f||r.d>t)return;var n=0;for(var q in r.c)if(r.c[q])n++;rows.push([r.d,sh,r.run+(k=='Day Chores'&&r.run=='8 Hour'?' ('+r.part+')':''),r.a=='None'?'':r.a,r.b=='None'?'':r.b,n])})});rows.sort(function(a,b){return a[0]<b[0]?1:-1})}
+else if(rp.src=='Shift Exchange Forms'){cols=['Created','Date','Shift','Running','Staff Name','Second Staff','Communication Update'];XR.forEach(function(x){if(x.d<f||x.d>t)return;rows.push([x.c,x.d,x.shift,x.run,x.a=='None'?'':x.a,x.b=='None'?'':x.b,x.n])})}
+else{cols=['Item','Expected','Counted','Result'];sharps.forEach(function(r,i){var c=cnt[i];rows.push([r[0],r[1],c===undefined?'':c,c===undefined||c===''?'':(+c==r[1]?'Match':'Check')])})}
+return {cols:cols,rows:rows}}
+function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function reportView(v){var D=repData(),isCh=rp.src=='Chores',title=cur;
+v.innerHTML='<div class="sv"><div class="crumbs"><span>Home</span> / <span>Residences</span> / <span>'+SITE+'</span> / <span>'+cur+'</span> / <b>Export Report</b></div><div class="gl"></div>'+(rp.msg?'<div class="toast" role="status">'+rp.msg+'</div>':'')+'<div class="acts"><button class="act" id="rx"><i class="ok">&#8681;</i>Export CSV</button><button class="act" id="rc"><i class="no">&minus;</i>Cancel</button></div><div class="ftitle">'+cur+' - '+SITE+' - Export Report</div>'+
+'<div class="fr"><label class="lb">Residence</label><input type="text" value="'+SITE+'" disabled></div>'+
+'<div class="fr"><label class="lb" for="rf">From</label><input type="date" id="rf" value="'+rp.from+'"></div><div class="fr"><label class="lb" for="rt">To</label><input type="date" id="rt" value="'+rp.to+'"></div>'+
+'<div class="band">Preview ('+D.rows.length+' record'+(D.rows.length==1?'':'s')+')</div><div class="wrap"><table class="g"><thead><tr>'+D.cols.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr></thead><tbody>'+(D.rows.length?D.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join(''):'<tr><td colspan="'+D.cols.length+'">No records to display</td></tr>')+'</tbody></table></div></div>';
+rp.msg='';
+['rf','rt'].forEach(function(id){$(id).onchange=function(){rp.from=$('rf').value;rp.to=$('rt').value;view()}});
+$('rc').onclick=function(){xp=null;tv={m:'list'};xs={m:'list'};view()};
+$('rx').onclick=function(){var q=function(c){return '"'+String(c).replace(/"/g,'""')+'"'};
+var csv=[D.cols].concat(D.rows).map(function(r){return r.map(q).join(',')}).join('\r\n');
+var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=cur.replace(/ /g,'-').toLowerCase()+'-report.csv';document.body.appendChild(a);a.click();a.remove();
+rp.msg='Report exported ('+D.rows.length+' records)';view()}}
 function menu(){var d=mode=='new'?NEW:NOW;
 $('menu').innerHTML='<div class="hd">Axis Family Resources<small>Sample Respite Home</small></div>'+d.map(function(x){
 return '<div class="grp">'+x.g+(x.n?'<span class="tag">Proposed</span>':'')+'</div>'+x.i.map(function(y){
@@ -206,13 +245,14 @@ var live=x.n||false;return '<button class="item'+(x.n?' newbox':' static')+'" da
 $('bNow').setAttribute('aria-pressed',mode=='now');$('bNew').setAttribute('aria-pressed',mode=='new')}
 function ctx(){return '<div class="ctx">Sample Respite Home currently serves:<div class="ppl"><span>Person Served A</span><span>Person Served B</span><span>Person Served C</span></div></div>'}
 function view(){var v=$('view');
+if(xp&&xp.cur==cur&&mode!='now')return reportView(v);
 if(mode=='now'){v.innerHTML='<h2>Residence Details</h2><div class="in">'+ctx()+'<p>Today the Shift Exchange items live on each Person Served profile. On a program with several people, staff open each profile to complete or find the same handover.</p></div>';return}
 if(cur=='Shift Exchange Forms')return exchangeView(v);
 if(cur.indexOf('Sharps')==0){v.innerHTML='<h2>Sharps and Knife Count at Shift Exchange</h2><div class="in">'+ctx()+
 '<div class="wrap"><table><thead><tr><th>Item</th><th>Expected</th><th>Counted</th><th>Result</th></tr></thead><tbody>'+sharps.map(function(r,i){var c=cnt[i];var res=c===undefined||c===''?'':(+c==r[1]?'<span class="st ok">Match</span>':'<span class="st p">Check</span>');return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td><input type="number" min="0" data-i="'+i+'" value="'+(c===undefined?'':c)+'"></td><td>'+res+'</td></tr>'}).join('')+'</tbody></table></div><p class="meta">One count per shift change for the whole residence, not one per person.</p></div>';
 v.querySelectorAll('input').forEach(function(x){x.onchange=function(){cnt[x.dataset.i]=x.value;view()}});return}
 taskView(v)}
-$('menu').onclick=function(e){var b=e.target.closest('.item');if(b&&!b.classList.contains('static')){cur=b.dataset.v;tv={m:'list'};xs={m:'list'};menu();view()}};
+$('menu').onclick=function(e){var b=e.target.closest('.item');if(b&&!b.classList.contains('static')){cur=b.dataset.v;xp=null;tv={m:'list'};xs={m:'list'};menu();view()}};
 $('bNow').onclick=function(){mode='now';menu();view()};$('bNew').onclick=function(){mode='new';menu();view()};
 menu();view();
 </script>
